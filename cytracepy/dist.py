@@ -21,11 +21,11 @@ def branch(focus, query, dist=cosine):
     Args:
         focus (pandas DataFrame): ordered n_windows x n_features 
         query (pandas DataFrame): ordered n_windows x n_features  
-        dist (callable):  function f(x, y) to calculate the distance between window vectors. Defaults to scipy.spatial.distance.cosine
+        dist (callable): f(x, y) to calculate the distance between window vectors. Defaults to scipy.spatial.distance.cosine
     
 
     Returns:
-        distance (float)
+        (float): distance between branches
     """
     
     distance, path = fastdtw(focus, query, dist=dist)
@@ -41,7 +41,7 @@ def greedy_min(branches_dist):
         branches_dist {pandas DataFrame} -- [focus_branches x query_branches]
 
     Returns:
-        distance (float)   
+        (float): distance between two sets of branches
     """
     return np.min(branches_dist).min()
 
@@ -67,15 +67,14 @@ def trajectory(
         query_cxb (pandas DataFrame): cell ids x branch, branch ordering
         markers (dict): branch ids in focus_cxb pointing a a list of features in focus and query
         comparable (callable): f(focus, query, marker_list) a function that makes focus and query comparable by giving them the same features. Defaults to cytracepy.manipulation.marker_intersection
-        dist (callable):  f(x, y) to calculate the distance between window vectors. Defaults to scipy.spatial.distance.cosine
-        condense (callable) -- f(branches_distance_matrix) derives a single distance measure from a matrix of branch distances. Defaults to cytracepy.dist.greedy_min
-        smooth (callable) -- f(query) transforms the rows of cells into rows of comparable windows. Defaults to lambda x: return x.
+        dist (callable):  f(x, y) distance used in dynamic time warping. Defaults to scipy.spatial.distance.cosine
+        condense (callable): f(branches_distance_matrix) derives a single distance measure from a matrix of branch distances. Defaults to cytracepy.dist.greedy_min
+        smooth (callable): f(query) transforms the rows of query (representing single cells) into rows of comparable windows. Defaults to none, lambda x: return x.
     
     Returns:
-        distance (float), return type of condense function
+        (float): distance between two trajectories. The user can manipulate the return by changing the condense function.
     """
 
-    
     focus_branch_names = focus_cxb.columns
     query_branch_names = query_cxb.columns
 

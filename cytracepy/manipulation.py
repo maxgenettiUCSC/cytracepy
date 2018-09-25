@@ -4,22 +4,29 @@ branches and trajectories.
 """
 import pandas as pd
 
+
 def order(matrix, psuedotime):
-    """order the columns by rank
+    """Order the rows of a matrix by rank of psuedotime.
     
     Arguments:
-        matrix {pandas data frame} -- [samples x features]
-        rank {pandas series} -- series with ordererable values and names of the columns of matrix
+        matrix (pandas DataFrame): samples x features (rows x cols) matrix
+        psuedotime (pandas Series): Ordererable values indexed by the same row names of matrix.
+
+    Returns:
+       (pandas DataFrame): ordered samples x features (rows x cols) matrix
     """
     return(matrix.loc[psuedotime.sort_values().index])
     
 
 def sliding_window_mean(matrix, window_size):
-    """[summary]
+    """Transform a matrix by calclulating the means of a given window size across rows.
     
     Arguments:
-        matrix {[type]} -- [description]
-        window_size {[type]} -- [description]
+        matrix (pandas DataFrame): samples x features (rows x cols) matrix
+        window_size (int): number of samples to average over
+    
+    Returns:
+        (pandas DataFrame): n_windows x features (rows x cols) matrix
     """
 
     smoothed = pd.DataFrame()
@@ -36,11 +43,15 @@ def sliding_window_mean(matrix, window_size):
 
 
 def marker_intersection(query, reference, features):
-    """Subset the matrices down to their intersection of rows
+    """Subset matricies down to an intersection of features.
     
     Arguments:
-        query {pandas dataframe} -- [ samples x feature matrix ]
-        reference {pandas dataframe} -- [ samples x feature matrix ]
+        query (pandas DataFrame): samples x feature (row x col) matrix
+        reference (pandas DataFrame): samples x feature matrix (row x col) matrix
+        features (list): column ids that are in query and reference
+    
+    Returns:
+        (pd.DataFrame, pd.DataFrame): tuple of modified matrices
     """
     features = set(features)
     q_features = set(query.columns)
